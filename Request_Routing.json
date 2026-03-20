@@ -1,0 +1,647 @@
+{
+  "name": "My workflow 421",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "QuickCart Customer Support",
+        "formDescription": "Fill the form to raise a request",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Description",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "customCss": ":root <div style=\"text-align:center; margin-bottom:16px;\">\n    <img src=\"YOUR_LOGO_URL\" alt=\"Company Logo\" style=\"max-width:120px; height:auto;\">\n</div>{\n\t--font-family: 'Open Sans', sans-serif;\n\t--font-weight-normal: 400;\n\t--font-weight-bold: 600;\n\t--font-size-body: 12px;\n\t--font-size-label: 14px;\n\t--font-size-test-notice: 12px;\n\t--font-size-input: 14px;\n\t--font-size-header: 20px;\n\t--font-size-paragraph: 14px;\n\t--font-size-link: 12px;\n\t--font-size-error: 12px;\n\t--font-size-html-h1: 28px;\n\t--font-size-html-h2: 20px;\n\t--font-size-html-h3: 16px;\n\t--font-size-html-h4: 14px;\n\t--font-size-html-h5: 12px;\n\t--font-size-html-h6: 10px;\n\t--font-size-subheader: 14px;\n\n\t/* Colors */\n\t--color-background: #fbfcfe;\n\t--color-test-notice-text: #e6a23d;\n\t--color-test-notice-bg: #fefaf6;\n\t--color-test-notice-border: #f6dcb7;\n\t--color-card-bg: #ffffff;\n\t--color-card-border: #dbdfe7;\n\t--color-card-shadow: rgba(99, 77, 255, 0.06);\n\t--color-link: #7e8186;\n\t--color-header: #525356;\n\t--color-label: #555555;\n\t--color-input-border: #dbdfe7;\n\t--color-input-text: #71747A;\n\t--color-focus-border: rgb(90, 76, 194);\n\t--color-submit-btn-bg: #7b5cff;\n\t--color-submit-btn-text: #ffffff;\n\t--color-error: #ea1f30;\n\t--color-required: #ff6d5a;\n\t--color-clear-button-bg: #7e8186;\n\t--color-html-text: #555;\n\t--color-html-link: #ff6d5a;\n\t--color-header-subtext: #7e8186;\n\n\t/* Border Radii */\n\t--border-radius-card: 8px;\n\t--border-radius-input: 6px;\n\t--border-radius-clear-btn: 50%;\n\t--card-border-radius: 8px;\n\n\t/* Spacing */\n\t--padding-container-top: 24px;\n\t--padding-card: 24px;\n\t--padding-test-notice-vertical: 12px;\n\t--padding-test-notice-horizontal: 24px;\n\t--margin-bottom-card: 16px;\n\t--padding-form-input: 12px;\n\t--card-padding: 24px;\n\t--card-margin-bottom: 16px;\n\n\t/* Dimensions */\n\t--container-width: 448px;\n\t--submit-btn-height: 48px;\n\t--checkbox-size: 18px;\n\n\t/* Others */\n\t--box-shadow-card: 0px 4px 16px 0px var(--color-card-shadow);\n\t--opacity-placeholder: 0.5;\n}"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -768,
+        -80
+      ],
+      "id": "53e1b5e6-fda9-444a-9839-f8647215eb9c",
+      "name": "On form submission",
+      "webhookId": "1be338bb-6f1c-4715-9bad-6cbc420596ed",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Description }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a helpful assistant\n\nYou are an expert support ticket classifier for an eCommerce platform.\n\nYour task is to analyze a customer support request description and assign it to exactly ONE category from the list below:\n\n1. payment_problems\n2. delivery_delays\n3. technical_issues\n4. account_questions\n5. miscellaneous\n\n### Definitions:\n\n- payment_problems:\n  Issues related to payments, refunds, failed transactions, double charges, billing errors, payment methods, or invoices.\n\n- delivery_delays:\n  Issues related to shipping delays, late deliveries, order not received, tracking problems, or logistics delays.\n\n- technical_issues:\n  Problems with the website/app such as bugs, crashes, checkout errors, login failures due to system errors, or performance issues.\n\n- account_questions:\n  Requests related to account management such as password reset, profile updates, account access, or account verification.\n\n- miscellaneous:\n  Any request that does not clearly fit into the above categories OR is ambiguous, vague, or represents a new/unseen type of issue.Name it as miscellaneous\n\n### Instructions:\n\n- Carefully read the input description.\n- Focus on the PRIMARY intent of the request.\n- Ignore irrelevant or secondary details.\n- If multiple issues are mentioned, choose the most critical one.\n- If unsure or the request does not clearly match any category, classify it as \"miscellaneous\".\n- Be conservative: only assign a specific category if confidence is high.\n\n### Output Format (STRICT):\n\nReturn ONLY a valid JSON object with no extra text:\n\n{\n  \"category\": \"<one_of_the_categories>\"\n}\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -400,
+        -80
+      ],
+      "id": "ba37cacd-c957-4f86-aef3-76c58e929a15",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "o3-mini",
+          "mode": "list",
+          "cachedResultName": "o3-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -544,
+        128
+      ],
+      "id": "1d51d4e9-f2b2-426a-8dd7-304a7ef62a12",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Bohujy0vyjxx1c6G",
+          "name": "OpenAi account 86"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"category\": \"<one_of_the_categories>\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        128
+      ],
+      "id": "40030e78-3879-4cc8-b197-d01f932143f1",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('AI Agent').item.json.output.category }}",
+                    "rightValue": "payment_problems",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "30d83d50-756a-45b9-8164-758b6e089c04"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "dc851a45-313f-43eb-97cc-4757736feb56",
+                    "leftValue": "={{ $('AI Agent').item.json.output.category }}",
+                    "rightValue": "delivery_delays",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "26c8ee3c-9308-4838-aec7-1294b4ec9b73",
+                    "leftValue": "={{ $('AI Agent').item.json.output.category }}",
+                    "rightValue": "technical_issues",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "97cb7ff2-bf3d-4b22-b2fc-79ae4255f6f9",
+                    "leftValue": "={{ $('AI Agent').item.json.output.category }}",
+                    "rightValue": "account-questions",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "09cadc8c-e8a6-4cef-aa16-b3f4597a9dd7",
+                    "leftValue": "={{ $('AI Agent').item.json.output.category }}",
+                    "rightValue": "miscellaneous",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        128,
+        -112
+      ],
+      "id": "68fb059f-bd1b-4a8a-84ff-19d448c5168f",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0ALUTH1AP9",
+          "mode": "list",
+          "cachedResultName": "payment"
+        },
+        "text": "=Hey Team!!\n\nReceived a new support request, please find the description below:\n\nDescription:  {{ $('On form submission').item.json.Description }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        304,
+        -464
+      ],
+      "id": "2b5331a0-2b72-4b1f-9c7c-7a39fa384007",
+      "name": "Send a message",
+      "webhookId": "449cac8a-f903-4adb-8222-8baa855e7bcc",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "RFh8EbWFP00CaRLA",
+          "name": "Slack account 23"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AM89X74KY",
+          "mode": "list",
+          "cachedResultName": "delivery"
+        },
+        "text": "=Hey Team!!\n\nReceived a new support request, please find the description below:\n\nDescription:  {{ $('On form submission').item.json.Description }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        304,
+        -272
+      ],
+      "id": "feb7cc37-cc53-4226-a734-1d49261b608b",
+      "name": "Send a message1",
+      "webhookId": "449cac8a-f903-4adb-8222-8baa855e7bcc",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "RFh8EbWFP00CaRLA",
+          "name": "Slack account 23"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0ALUTUKRK9",
+          "mode": "list",
+          "cachedResultName": "technical-issues"
+        },
+        "text": "=Hey Team!!\n\nReceived a new support request, please find the description below:\n\nDescription:  {{ $('On form submission').item.json.Description }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        304,
+        -64
+      ],
+      "id": "9fd251a6-ff87-4b0b-9080-65a948085891",
+      "name": "Send a message2",
+      "webhookId": "449cac8a-f903-4adb-8222-8baa855e7bcc",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "RFh8EbWFP00CaRLA",
+          "name": "Slack account 23"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AM40ARZ6X",
+          "mode": "list",
+          "cachedResultName": "account-queries"
+        },
+        "text": "=Hey Team!!\n\nReceived a new support request, please find the description below:\n\nDescription:  {{ $('On form submission').item.json.Description }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        320,
+        128
+      ],
+      "id": "0be537d2-7f2a-4394-987e-f78ef6512af1",
+      "name": "Send a message3",
+      "webhookId": "449cac8a-f903-4adb-8222-8baa855e7bcc",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "RFh8EbWFP00CaRLA",
+          "name": "Slack account 23"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AMP8K6Y8Z",
+          "mode": "list",
+          "cachedResultName": "miscellaneous"
+        },
+        "text": "=Hey Team!!\n\nReceived a new support request, please find the description below:\n\nDescription:  {{ $('On form submission').item.json.Description }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        320,
+        320
+      ],
+      "id": "ea2f3d1d-62aa-444b-b9ba-6f4c1899d591",
+      "name": "Send a message4",
+      "webhookId": "449cac8a-f903-4adb-8222-8baa855e7bcc",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "RFh8EbWFP00CaRLA",
+          "name": "Slack account 23"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json.Email }}",
+        "subject": "Quick Cart:Your Request is Received",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Support Request Received</title>\n</head>\n<body style=\"margin:0; padding:0; background-color:#f4f4f4; font-family: Arial, sans-serif;\">\n\n  <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n    <tr>\n      <td align=\"center\">\n\n        <!-- Main Container -->\n        <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#ffffff; border-radius:8px; overflow:hidden;\">\n          \n<!-- Logo -->\n          <tr>\n            <td align=\"center\" style=\"padding:20px 20px 10px;\">\n              <img src=\"https://res.cloudinary.com/dhavvy1rz/image/upload/v1773827426/ChatGPT_Image_Mar_18_2026_01_32_18_PM_nw9mur.png\" alt=\"QuickCart Logo\" width=\"240\"  style=\"display:block;\">\n            </td>\n          </tr>\n          \n\n          <!-- Header -->\n          <tr>\n            <td align=\"center\" style=\"background: linear-gradient(90deg, #7b5cff, #6a0dad); padding:30px 20px; color:#ffffff;\">\n              <h1 style=\"margin:0; font-size:24px;\">Support Request Received</h1>\n              <p style=\"margin:8px 0 0; font-size:16px;\">We're on it!</p>\n            </td>\n          </tr>\n\n          <!-- Body -->\n          <tr>\n            <td align=\"center\" style=\"padding:40px 20px;\">\n\n              <!-- Check Icon -->\n              <table width=\"80\" height=\"80\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#1abc9c; border-radius:50%;\">\n                <tr>\n                  <td align=\"center\" style=\"color:#ffffff; font-size:40px;\">\n                    ✓\n                  </td>\n                </tr>\n              </table>\n\n              <!-- Message -->\n              <p style=\"font-size:20px; color:#333; margin:30px 0 10px;\">\n                Hello {{ $('On form submission').item.json.Name }},\n              </p>\n\n              <p style=\"font-size:16px; color:#555; line-height:1.6; margin:0;\">\n                We have received your support request. Our team is working on it.\n              </p>\n\n              <p style=\"font-size:18px; margin-top:30px; color:#333;\">\n                Thank you!\n              </p>\n\n            </td>\n          </tr>\n\n        </table>\n\n        <!-- Footer Spacing -->\n        <table width=\"600\">\n          <tr><td height=\"20\"></td></tr>\n        </table>\n\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        -64
+      ],
+      "id": "46a1d508-c266-47de-a844-66aa4e717302",
+      "name": "Send a message5",
+      "webhookId": "0a1d093b-f2c7-43e7-b8fa-d5c8a0accddc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "1if454NIiCZotWjI",
+          "name": "Gmail account 166"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "12J4I3fg_isjBCcBXj0w1PVcV8WlUkcAgNHjEx4tecK0",
+          "mode": "list",
+          "cachedResultName": "Demo-1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12J4I3fg_isjBCcBXj0w1PVcV8WlUkcAgNHjEx4tecK0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 793462544,
+          "mode": "list",
+          "cachedResultName": "Route",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12J4I3fg_isjBCcBXj0w1PVcV8WlUkcAgNHjEx4tecK0/edit#gid=793462544"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "Description": "={{ $json.Description }}",
+            "Email": "={{ $json.Email }}",
+            "Submitted_at": "={{ $json.submittedAt }}"
+          },
+          "matchingColumns": [
+            "Name"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submitted_at",
+              "displayName": "Submitted_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -560,
+        -80
+      ],
+      "id": "6f0f4247-2364-467c-b228-155b53862728",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cGU3Vo6Dc01YKyNd",
+          "name": "Google Sheets account 146"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message4": {
+      "main": [
+        [
+          {
+            "node": "Send a message5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message2": {
+      "main": [
+        [
+          {
+            "node": "Send a message5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message3": {
+      "main": [
+        [
+          {
+            "node": "Send a message5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Send a message5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Send a message5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "e15529f8-bb43-4995-b088-f3adbd8fbd5f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0db25aff814d9d346b0e6d897946122cfc12e064b6e58ff53ffd8c9cc948ff20"
+  },
+  "id": "by6oCQkpZc0Sx7kS",
+  "tags": []
+}
