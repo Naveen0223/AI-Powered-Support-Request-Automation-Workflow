@@ -1,4 +1,4 @@
-# 🚀 AI-Powered Support Request Automation Workflow
+# 🚀 AI Customer Support Automation — Automatically classify, route and acknowledge customer requests
 
 ## 📌 Overview
 This project implements an end-to-end intelligent automation system for handling customer support requests using **n8n** and AI-driven classification. It eliminates manual intervention in ticket processing, ensuring faster response times, improved accuracy, and scalable operations.
